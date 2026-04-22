@@ -65,6 +65,7 @@ export default function SettingsPage({
   onUnpauseDelivery, onRemoveHolidayAddress,
 }) {
   const isCancelled = subscriptionStatus === 'cancelled';
+  const noPaperPlan = !isCancelled && !plan.hasPaper;
 
   return (
     <div className="max-w-xl space-y-8">
@@ -121,6 +122,12 @@ export default function SettingsPage({
           {isCancelled && (
             <InfoBar variant="red" icon={ICON_WARNING}>
               Subscription cancelled — you will not receive physical copies after 21. mai 2026
+            </InfoBar>
+          )}
+
+          {noPaperPlan && (
+            <InfoBar variant="blue" icon={ICON_LOCATION}>
+              Subscribe to the <strong>Total + paper</strong> plan to receive physical copies of the newspaper
             </InfoBar>
           )}
 
