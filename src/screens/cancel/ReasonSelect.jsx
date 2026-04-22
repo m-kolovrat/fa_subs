@@ -234,8 +234,7 @@ export default function ReasonSelect({ plan, onBack, onContinue, onAcceptOffer, 
           <Button
             variant="primary"
             fullWidth
-            disabled={!selected}
-            onClick={() => selected && onContinue(selected)}
+            onClick={() => onContinue(selected)}
           >
             Continue
           </Button>
