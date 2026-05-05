@@ -3,7 +3,6 @@ export const PLANS = [
     id: 'basic',
     name: 'Basic',
     monthlyPrice: 449,
-    yearlyPrice: 359,
     firstMonthPrice: 1,
     features: [
       'Digital access to premium articles from Finansavisen, Kapital, and Motor',
@@ -15,7 +14,6 @@ export const PLANS = [
     id: 'total',
     name: 'Total',
     monthlyPrice: 699,
-    yearlyPrice: 559,
     firstMonthPrice: 99,
     popular: true,
     features: [
@@ -39,7 +37,6 @@ export const PLANS = [
     id: 'total-paper',
     name: 'Total + paper',
     monthlyPrice: 999,
-    yearlyPrice: 799,
     firstMonthPrice: 249,
     features: [
       'Everything in Total',
@@ -61,7 +58,6 @@ export const PLANS = [
   {
     id: 'bedrift',
     name: 'Bedrift',
-    yearlyPrice: 10000,
     features: [
       'Seamless access for all employees',
       "Discounted prices on Finansavisen's professional events",

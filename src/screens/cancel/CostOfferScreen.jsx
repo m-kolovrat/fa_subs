@@ -19,7 +19,7 @@ export default function CostOfferScreen({ plan, onClaimOffer, onCancel, onBack }
   const originalYearly = (plan?.monthlyPrice ?? 0) * 12;
   const discountedYearly = Math.round(originalYearly * 0.7);
 
-  const fmt = (n) => n.toLocaleString('nb');
+  const fmt = (n) => n.toLocaleString('en-US');
 
   return (
     <div className="min-h-screen bg-gray-page flex flex-col">

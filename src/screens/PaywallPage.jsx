@@ -48,26 +48,19 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
           <span className={`text-[14px] font-medium ${billing === 'monthly' ? 'text-gray-dark' : 'text-gray-medium'}`}>Monthly</span>
           <button
             onClick={() => setBilling(b => b === 'monthly' ? 'yearly' : 'monthly')}
-            className={`relative w-11 h-6 rounded-pill transition-colors cursor-pointer border-0 ${billing === 'yearly' ? 'bg-blue-primary' : 'bg-gray-border'}`}
+            className={`relative w-11 h-6 rounded-full transition-colors cursor-pointer border-0 flex-shrink-0 ${billing === 'yearly' ? 'bg-blue-primary' : 'bg-gray-border'}`}
           >
-            <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${billing === 'yearly' ? 'translate-x-[22px]' : 'translate-x-0.5'}`} />
+            <span className={`absolute left-[2px] top-[2px] w-5 h-5 bg-white rounded-full shadow transition-transform ${billing === 'yearly' ? 'translate-x-[20px]' : 'translate-x-0'}`} />
           </button>
           <span className={`text-[14px] font-medium ${billing === 'yearly' ? 'text-gray-dark' : 'text-gray-medium'}`}>Yearly</span>
-          {billing === 'yearly' && (
-            <span className="px-2 py-0.5 text-[11px] font-semibold rounded-md" style={{ backgroundColor: '#d9f7e9', color: '#14985e' }}>
-              Save 20%
-            </span>
-          )}
         </div>
 
         {/* Plan cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {PLANS.filter(p => !p.isBusiness).map((plan) => {
             const isCurrent = plan.id === currentPlan.id;
-            const price = plan.isBusiness
-              ? plan.yearlyPrice
-              : billing === 'yearly'
-              ? plan.yearlyPrice
+            const price = billing === 'yearly'
+              ? Math.round(plan.monthlyPrice * 12 * 0.8)
               : plan.monthlyPrice;
 
             return (
@@ -87,7 +80,7 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
 
                 {plan.isBusiness ? (
                   <div className="mb-4">
-                    <span className="text-[28px] font-bold text-gray-dark">{price.toLocaleString('nb')}</span>
+                    <span className="text-[28px] font-bold text-gray-dark">{price.toLocaleString('en-US')}</span>
                     <span className="text-[13px] text-gray-medium ml-1">kr/år</span>
                     <div className="mt-2 flex items-center gap-2">
                       <span className="text-[13px] text-gray-medium">Select number of employees</span>
@@ -107,12 +100,12 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
                 ) : (
                   <div className="mb-4">
                     <div className="flex items-end gap-1.5">
-                      <span className="text-[28px] font-bold text-gray-dark">{price}</span>
-                      <span className="text-[13px] text-gray-medium pb-1">kr/{billing === 'yearly' ? 'mnd' : 'mnd'}</span>
+                      <span className="text-[28px] font-bold text-gray-dark">{price.toLocaleString('en-US')}</span>
+                      <span className="text-[13px] text-gray-medium pb-1">kr/{billing === 'yearly' ? 'år' : 'mnd'}</span>
                     </div>
                     {billing === 'monthly' && plan.firstMonthPrice !== undefined && (
                       <p className="text-[12px] text-gray-medium mt-0.5">
-                        First month: <span className="font-semibold text-gray-dark">{plan.firstMonthPrice} kr</span>
+                        First month: <span className="font-semibold text-gray-dark">{plan.firstMonthPrice.toLocaleString('en-US')} kr</span>
                       </p>
                     )}
                   </div>
