@@ -1,6 +1,5 @@
 const NAV_ITEMS = [
   { label: 'Nyhetsbrev' },
-  { label: 'Forum' },
   { label: 'eAvis' },
   { label: 'Innstillinger' },
   { label: 'Mitt abonnement', active: true },
@@ -14,55 +13,82 @@ const NAV_ITEMS = [
 export default function Layout({ children }) {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Top header bar */}
-      <header className="w-full flex-shrink-0" style={{ backgroundColor: '#024588', height: '90px' }} />
+      {/* Top header bar — 160px matching Figma */}
+      <header className="w-full flex-shrink-0" style={{ backgroundColor: '#024588', height: '160px' }} />
 
-      <div className="flex flex-1">
-        {/* Sidebar — 560px wide, content right-aligned */}
-        <aside className="w-[560px] flex-shrink-0 bg-white border-r border-gray-border flex flex-col items-end">
-          {/* Inner content pinned to the right at a readable width */}
-          <div className="w-[220px] flex flex-col flex-1">
+      <div className="flex flex-1 gap-[68px]">
+        {/* Sidebar — shadow, no border, content right-aligned via padding */}
+        <aside
+          className="flex-shrink-0 bg-white flex flex-col"
+          style={{ boxShadow: '0px 0px 42px 0px rgba(63,65,81,0.06)', paddingLeft: '292px', paddingRight: '70px' }}
+        >
+          <div className="flex flex-col gap-[22px] w-[180px]">
             {/* User profile */}
-            <div className="px-6 pt-8 pb-5">
-              <div className="flex items-center gap-3 mb-5">
-                <div className="w-12 h-12 rounded-full bg-blue-primary flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-base">L</span>
+            <div className="flex flex-col gap-[14px] px-[18px] pt-[40px]">
+              <div className="flex flex-col gap-[14px]">
+                {/* Avatar */}
+                <div
+                  className="w-[50px] h-[50px] rounded-full bg-blue-primary flex items-center justify-center flex-shrink-0"
+                >
+                  <span style={{ fontFamily: "'Public Sans', sans-serif", fontWeight: 700, fontSize: '24px', color: 'white', lineHeight: '32px' }}>
+                    L
+                  </span>
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[16px] font-bold text-gray-dark leading-6">Hei, Lucky!</p>
-                  <p className="text-[12px] text-gray-medium leading-4 truncate">luckyg@gmail.com</p>
+                {/* Name + email */}
+                <div className="flex flex-col gap-[4px]">
+                  <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: '18px', lineHeight: '26px', color: '#191a20' }}>
+                    Hei, Lucky!
+                  </p>
+                  <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '22px', color: '#989ab0' }}>
+                    luckyg@gmail.com
+                  </p>
                 </div>
               </div>
-              <div className="h-px bg-gray-border" />
+              {/* Divider */}
+              <div className="h-px bg-gray-border w-full" />
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 px-4">
+            <nav className="flex flex-col">
               {NAV_ITEMS.map((item) => (
                 <div
                   key={item.label}
-                  className={`px-3 py-2 rounded-lg text-[13px] cursor-pointer leading-5 ${
-                    item.active
-                      ? 'bg-gray-sidebar font-medium text-gray-dark'
-                      : 'text-gray-medium hover:bg-gray-page'
-                  }`}
+                  style={{
+                    paddingLeft: '18px',
+                    paddingRight: '18px',
+                    paddingTop: '9px',
+                    paddingBottom: '9px',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    lineHeight: '22px',
+                    fontFamily: 'Inter, sans-serif',
+                    fontWeight: item.active ? 400 : 400,
+                    color: item.active ? '#191a20' : '#797b96',
+                    backgroundColor: item.active ? '#f3f3f4' : 'transparent',
+                    cursor: 'pointer',
+                  }}
                 >
                   {item.label}
                 </div>
               ))}
             </nav>
 
-            {/* Logout */}
-            <div className="px-6 py-6 border-t border-gray-border">
-              <button className="text-[13px] text-blue-primary hover:underline cursor-pointer bg-transparent border-0">
-                Logg ut
-              </button>
+            {/* Divider + Logout */}
+            <div className="flex flex-col">
+              <div className="h-px bg-gray-border w-full" />
+              <div style={{ paddingLeft: '18px', paddingRight: '18px', paddingTop: '12px', paddingBottom: '12px' }}>
+                <button
+                  style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '22px', color: '#0373e3', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}
+                >
+                  Logg ut
+                </button>
+              </div>
             </div>
           </div>
         </aside>
 
-        {/* Main content */}
-        <main className="flex-1 bg-gray-page px-12 py-10">
+        {/* Main content — no left padding (gap handles spacing) */}
+        <main className="flex-shrink-0 bg-gray-page pt-10 pb-10 pr-10" style={{ width: '636px' }}>
           {children}
         </main>
       </div>
