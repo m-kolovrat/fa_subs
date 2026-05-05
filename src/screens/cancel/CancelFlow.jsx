@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import ReasonSelect from './ReasonSelect';
+import CostOfferScreen from './CostOfferScreen';
 import BenefitsScreen from './BenefitsScreen';
 import CancelSuccess from './CancelSuccess';
 
-// Steps: 'reason' → 'benefits' → 'cancelled'
+// Steps: 'reason' → 'cost-offer' (if cost) or 'benefits' → 'cancelled'
 export default function CancelFlow({ plan, onClose, onCancelled, onDowngrade }) {
   const [step, setStep] = useState('reason');
 
@@ -12,9 +13,26 @@ export default function CancelFlow({ plan, onClose, onCancelled, onDowngrade }) 
       <ReasonSelect
         plan={plan}
         onBack={onClose}
-        onContinue={() => setStep('benefits')}
-        onAcceptOffer={onClose}          // inline offer accepted → back to settings
-        onDowngrade={onDowngrade}        // "View plans" → paywall
+        onContinue={(reason) => {
+          if (reason === 'cost') {
+            setStep('cost-offer');
+          } else {
+            setStep('benefits');
+          }
+        }}
+        onAcceptOffer={onClose}
+        onDowngrade={onDowngrade}
+      />
+    );
+  }
+
+  if (step === 'cost-offer') {
+    return (
+      <CostOfferScreen
+        plan={plan}
+        onBack={() => setStep('reason')}
+        onClaimOffer={onClose}           // accepted offer → back to settings
+        onCancel={() => setStep('cancelled')}
       />
     );
   }
@@ -23,7 +41,7 @@ export default function CancelFlow({ plan, onClose, onCancelled, onDowngrade }) 
     return (
       <BenefitsScreen
         plan={plan}
-        onKeep={onClose}                 // "Keep my subscription" → back to settings
+        onKeep={onClose}
         onCancel={() => setStep('cancelled')}
       />
     );

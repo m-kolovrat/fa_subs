@@ -159,7 +159,7 @@ function InlineSupportInfo() {
 function InlineExpansion({ reasonId, onAcceptOffer, onDowngrade }) {
   switch (reasonId) {
     case 'cost':
-      return <InlineCostOffer onAcceptDiscount={onAcceptOffer} onDowngrade={onDowngrade} />;
+      return null;
     case 'not-using':
       return <InlinePauseOffer maxMonths={3} onAcceptPause={onAcceptOffer} />;
     case 'temp-break':

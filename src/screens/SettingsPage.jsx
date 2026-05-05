@@ -3,8 +3,7 @@ import Button from '../components/Button';
 // Blue circle checkmark matching Figma
 const CHECK_ICON = (
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5">
-    <circle cx="8" cy="8" r="8" fill="#0373e3" fillOpacity="0.12"/>
-    <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#0373e3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#151719" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -69,13 +68,13 @@ function FieldLabel({ children }) {
 
 export default function SettingsPage({
   plan, subscriptionStatus, deliveryAddress, deliveryPeriod,
-  deliveryPause, holidayAddress,
+  deliveryPause, holidayAddress, pendingPlanChange,
   onChangePlan, onCancelSubscription, onRenewSubscription,
   onEditAddress, onPauseDelivery, onHolidayAddress,
   onUnpauseDelivery, onRemoveHolidayAddress,
 }) {
   const isCancelled = subscriptionStatus === 'cancelled';
-  const noPaperPlan = !isCancelled && !plan.hasPaper;
+  const noPaperPlan = !isCancelled && !plan.hasPaper && !pendingPlanChange?.plan?.hasPaper;
 
   return (
     <div className="w-full space-y-10">
@@ -87,8 +86,15 @@ export default function SettingsPage({
           {/* Card body */}
           <div className="flex flex-col gap-6 p-4">
             {isCancelled && (
-              <InfoBar variant="red" icon={ICON_WARNING}>
-                Subscription cancelled — active until 21. mai 2026
+              <InfoBar variant="amber" icon={ICON_WARNING}>
+                Your subscription will end on 21. mai 2026
+              </InfoBar>
+            )}
+
+            {pendingPlanChange && (
+              <InfoBar variant="amber" icon={ICON_WARNING}>
+                Your plan will change to <strong>{pendingPlanChange.plan.name}</strong> on{' '}
+                {formatDate(pendingPlanChange.effectiveDate)} at {pendingPlanChange.plan.monthlyPrice} kr/mnd
               </InfoBar>
             )}
 
@@ -148,7 +154,7 @@ export default function SettingsPage({
           {/* Card body */}
           <div className="flex flex-col gap-6 p-4">
             {isCancelled && (
-              <InfoBar variant="red" icon={ICON_WARNING}>
+              <InfoBar variant="amber" icon={ICON_WARNING}>
                 Subscription cancelled — you will not receive physical copies after 21. mai 2026
               </InfoBar>
             )}

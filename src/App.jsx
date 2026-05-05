@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Agentation } from 'agentation';
 import { DEFAULT_PLAN } from './data/plans';
 import Layout from './components/Layout';
 import SettingsPage from './screens/SettingsPage';
@@ -22,22 +23,30 @@ export default function App() {
   const [subscriptionStatus, setSubscriptionStatus] = useState('active'); // 'active' | 'cancelled'
   const [deliveryAddress, setDeliveryAddress] = useState(INITIAL_ADDRESS);
   const [deliveryPeriod, setDeliveryPeriod] = useState('Mon-Sat');
-  const [deliveryPause, setDeliveryPause] = useState(null);   // null | { startDate, endDate }
-  const [holidayAddress, setHolidayAddress] = useState(null); // null | { address, startDate, endDate }
+  const [deliveryPause, setDeliveryPause] = useState(null);       // null | { startDate, endDate }
+  const [holidayAddress, setHolidayAddress] = useState(null);     // null | { address, startDate, endDate }
+  const [pendingPlanChange, setPendingPlanChange] = useState(null); // null | { plan, effectiveDate }
 
   const goSettings = () => setScreen('settings');
 
   // --- Paywall ---
   const handleSelectPlan = (plan, paperDelivery) => {
-    setCurrentPlan(plan);
-    if (paperDelivery) setDeliveryPeriod(paperDelivery);
-    setSubscriptionStatus('active');
+    const isDowngrade = plan.monthlyPrice < currentPlan.monthlyPrice;
+    if (isDowngrade && subscriptionStatus === 'active') {
+      setPendingPlanChange({ plan, effectiveDate: '2026-06-21' });
+    } else {
+      setCurrentPlan(plan);
+      if (paperDelivery) setDeliveryPeriod(paperDelivery);
+      setSubscriptionStatus('active');
+      setPendingPlanChange(null);
+    }
     goSettings();
   };
 
   // --- Cancel ---
   const handleCancelled = () => {
     setSubscriptionStatus('cancelled');
+    setPendingPlanChange(null);
     goSettings();
   };
 
@@ -59,8 +68,10 @@ export default function App() {
 
   // ---- Render ----
 
+  let content;
+
   if (screen === 'paywall') {
-    return (
+    content = (
       <PaywallPage
         currentPlan={currentPlan}
         subscriptionStatus={subscriptionStatus}
@@ -68,10 +79,8 @@ export default function App() {
         onClose={goSettings}
       />
     );
-  }
-
-  if (screen === 'cancel') {
-    return (
+  } else if (screen === 'cancel') {
+    content = (
       <CancelFlow
         plan={currentPlan}
         onClose={goSettings}
@@ -79,10 +88,8 @@ export default function App() {
         onDowngrade={() => setScreen('paywall')}
       />
     );
-  }
-
-  if (screen === 'edit-address') {
-    return (
+  } else if (screen === 'edit-address') {
+    content = (
       <EditAddress
         address={deliveryAddress}
         deliveryPeriod={deliveryPeriod}
@@ -90,45 +97,48 @@ export default function App() {
         onSave={handleSaveAddress}
       />
     );
-  }
-
-  if (screen === 'pause-delivery') {
-    return (
+  } else if (screen === 'pause-delivery') {
+    content = (
       <PauseDelivery
         onBack={goSettings}
         onSave={handleSavePause}
       />
     );
-  }
-
-  if (screen === 'holiday-address') {
-    return (
+  } else if (screen === 'holiday-address') {
+    content = (
       <HolidayAddress
         onBack={goSettings}
         onSave={handleSaveHoliday}
       />
     );
+  } else {
+    content = (
+      <Layout>
+        <SettingsPage
+          plan={currentPlan}
+          subscriptionStatus={subscriptionStatus}
+          deliveryAddress={deliveryAddress}
+          deliveryPeriod={deliveryPeriod}
+          deliveryPause={deliveryPause}
+          holidayAddress={holidayAddress}
+          pendingPlanChange={pendingPlanChange}
+          onChangePlan={() => setScreen('paywall')}
+          onCancelSubscription={() => setScreen('cancel')}
+          onRenewSubscription={() => setScreen('paywall')}
+          onEditAddress={() => setScreen('edit-address')}
+          onPauseDelivery={() => setScreen('pause-delivery')}
+          onHolidayAddress={() => setScreen('holiday-address')}
+          onUnpauseDelivery={() => setDeliveryPause(null)}
+          onRemoveHolidayAddress={() => setHolidayAddress(null)}
+        />
+      </Layout>
+    );
   }
 
-  // Default: settings
   return (
-    <Layout>
-      <SettingsPage
-        plan={currentPlan}
-        subscriptionStatus={subscriptionStatus}
-        deliveryAddress={deliveryAddress}
-        deliveryPeriod={deliveryPeriod}
-        deliveryPause={deliveryPause}
-        holidayAddress={holidayAddress}
-        onChangePlan={() => setScreen('paywall')}
-        onCancelSubscription={() => setScreen('cancel')}
-        onRenewSubscription={() => setScreen('paywall')}
-        onEditAddress={() => setScreen('edit-address')}
-        onPauseDelivery={() => setScreen('pause-delivery')}
-        onHolidayAddress={() => setScreen('holiday-address')}
-        onUnpauseDelivery={() => setDeliveryPause(null)}
-        onRemoveHolidayAddress={() => setHolidayAddress(null)}
-      />
-    </Layout>
+    <>
+      {content}
+      {import.meta.env.DEV && <Agentation />}
+    </>
   );
 }

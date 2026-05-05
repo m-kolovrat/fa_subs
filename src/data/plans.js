@@ -78,13 +78,13 @@ export const PLANS = [
 export const DEFAULT_PLAN = PLANS[2]; // Total + paper
 
 export const CANCEL_REASONS = [
-  { id: 'cost', label: 'Too expensive' },
-  { id: 'not-using', label: 'Not using it enough' },
-  { id: 'competitor', label: 'Switching to a competitor' },
-  { id: 'temp-break', label: 'Taking a temporary break' },
+  { id: 'cost', label: 'Cost' },
+  { id: 'not-using', label: 'Not using Finansavisen enough' },
+  { id: 'competitor', label: 'Switching to competitor' },
+  { id: 'temp-break', label: 'Need a break' },
   { id: 'feature', label: 'Missing or bad feature' },
-  { id: 'payment', label: 'Payment or subscription issues' },
-  { id: 'other', label: 'Other reason' },
+  { id: 'payment', label: 'Payment or delivery issues' },
+  { id: 'other', label: 'Other' },
 ];
 
 export const COMPETITORS = [

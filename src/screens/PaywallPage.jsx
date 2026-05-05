@@ -39,9 +39,9 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
       </div>
 
       {/* Content */}
-      <div className="flex-1 px-8 py-8 max-w-5xl mx-auto w-full">
-        <h1 className="text-[24px] font-bold text-gray-dark mb-1">Subscribe today</h1>
-        <p className="text-[14px] text-gray-medium mb-6">No commitment. Cancel easily any time</p>
+      <div className="flex-1 px-8 py-8 max-w-5xl mx-auto w-full flex flex-col items-center">
+        <h1 className="text-[24px] font-bold text-gray-dark mb-1 text-center">Subscribe today</h1>
+        <p className="text-[14px] text-gray-medium mb-6 text-center">No commitment. Cancel easily any time</p>
 
         {/* Billing toggle */}
         <div className="flex items-center gap-3 mb-8">
@@ -61,8 +61,8 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
         </div>
 
         {/* Plan cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-          {PLANS.map((plan) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {PLANS.filter(p => !p.isBusiness).map((plan) => {
             const isCurrent = plan.id === currentPlan.id;
             const price = plan.isBusiness
               ? plan.yearlyPrice
