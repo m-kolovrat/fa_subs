@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import Button from '../../components/Button';
 
 const FA_LOGO = (
@@ -26,21 +25,8 @@ const CHECK_ICON = (
   </svg>
 );
 
-function RadioDot({ selected }) {
-  return (
-    <div className={`relative w-4 h-4 rounded-full border-2 flex-shrink-0 overflow-hidden ${selected ? 'border-blue-primary' : 'border-gray-border'}`}>
-      {selected && <div className="absolute w-[6px] h-[6px] bg-blue-primary rounded-full left-[3px] top-[3px]" />}
-    </div>
-  );
-}
-
-export default function CostOfferScreen({ plan, onClaimOffer, onCancel }) {
-  const [paperOption, setPaperOption] = useState(plan?.deliveryOptions?.[0] ?? null);
-
+export default function ConfirmCancellationScreen({ plan, onBack, onConfirm }) {
   const features = plan?.settingsFeatures ?? plan?.features ?? [];
-  const originalYearly = (plan?.monthlyPrice ?? 0) * 12;
-  const discountedYearly = Math.round(originalYearly * 0.7);
-  const fmt = (n) => n.toLocaleString('en-US');
 
   return (
     <div className="min-h-screen bg-gray-page flex flex-col">
@@ -52,50 +38,21 @@ export default function CostOfferScreen({ plan, onClaimOffer, onCancel }) {
       {/* Content */}
       <div className="flex-1 flex flex-col items-center px-6 py-10">
         <div className="w-full max-w-[440px] flex flex-col gap-8">
-          {/* Heading */}
-          <div className="flex flex-col gap-2">
-            <h2 className="text-[20px] font-bold text-gray-dark leading-[26px]">
-              Before you go,<br />here is 30% off on yearly plan
-            </h2>
-            <p className="text-[14px] text-gray-medium leading-5">
-              We would like to offer you an exclusive discount
-            </p>
+          {/* Title */}
+          <div>
+            <h2 className="text-[20px] font-bold text-gray-dark leading-[26px]">Confirm cancellation?</h2>
+            <p className="text-[20px] font-bold text-gray-dark leading-[26px]">You will have access until 6. juni 2026.</p>
           </div>
 
           {/* Card */}
-          <div className="bg-white border border-gray-border rounded-[16px] p-6 flex flex-col gap-4">
-            {/* Plan name */}
-            <p className="text-[18px] font-semibold text-gray-dark leading-6">{plan?.name}</p>
+          <div className="bg-white border border-gray-border rounded-[16px] p-4 flex flex-col gap-4">
+            <p className="text-[14px] text-gray-dark leading-5">
+              Confirmation email will be send to{' '}
+              <span className="font-semibold">luckygroningen@gmail.com</span>
+            </p>
 
-            {/* Pricing */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-baseline gap-2">
-                <span className="text-[34px] font-bold text-gray-dark leading-10">{fmt(discountedYearly)}</span>
-                <span className="text-[20px] font-bold text-[#9ea6ad] line-through leading-[26px]">{fmt(originalYearly)}</span>
-                <span className="text-[14px] font-medium text-gray-dark leading-5">kr</span>
-              </div>
-              <p className="text-[14px] text-gray-medium leading-5">
-                Renewed at {fmt(originalYearly)} kr/år
-              </p>
-            </div>
+            <p className="text-[14px] text-gray-dark leading-5">You will lose access to</p>
 
-            {/* Paper delivery options */}
-            {plan?.hasPaper && plan.deliveryOptions && (
-              <div className="flex flex-col gap-2 pb-4 border-b border-gray-border">
-                {plan.deliveryOptions.map((opt) => (
-                  <div
-                    key={opt}
-                    onClick={() => setPaperOption(opt)}
-                    className="flex items-center gap-2 cursor-pointer"
-                  >
-                    <RadioDot selected={paperOption === opt} />
-                    <span className="text-[14px] text-gray-dark leading-5">Paper {opt}</span>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Features */}
             <ul className="flex flex-col gap-2">
               {features.map((f) => (
                 <li key={f} className="flex items-start gap-2">
@@ -108,8 +65,8 @@ export default function CostOfferScreen({ plan, onClaimOffer, onCancel }) {
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-2">
-            <Button variant="outline" className="whitespace-nowrap shadow-[inset_0_0_0_1px_#EAECED]" onClick={onCancel}>Cancel subscription</Button>
-            <Button variant="primary" className="w-[140px]" onClick={onClaimOffer}>Claim offer</Button>
+            <Button variant="outline" className="w-[104px] shadow-[inset_0_0_0_1px_#EAECED]" onClick={onBack}>Avbryt</Button>
+            <Button variant="destructive" className="w-[104px]" onClick={onConfirm}>Fullfør</Button>
           </div>
         </div>
       </div>

@@ -1,243 +1,162 @@
 import { useState } from 'react';
-import { CANCEL_REASONS, COMPETITORS } from '../../data/plans';
-import StepHeader from '../../components/StepHeader';
+import { CANCEL_REASONS } from '../../data/plans';
 import Button from '../../components/Button';
 
-// ── Inline expansion components ───────────────────────────────────────────────
+const FA_LOGO = (
+  <svg width="147" height="24" viewBox="0 0 147 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M80.1362 6.66778C77.298 6.66778 73.9643 7.61497 73.9643 11.9734L78.3161 11.9751C78.4089 11.0353 78.8099 10.4283 79.9515 10.4283C80.8462 10.4283 81.2472 11.0678 81.2472 12.0748V13.2175C77.8837 13.3181 73.3264 14.3992 73.3264 18.9331C73.3264 22.2254 75.2566 23.9318 77.9425 23.9318C79.4834 23.9318 81.2472 22.5746 81.2472 22.5746V23.9318H86.2709L86.2444 11.8062C86.2444 8.07817 83.1286 6.66778 80.1362 6.66778ZM81.2464 19.6324C80.63 20.405 80.0749 20.7077 79.6425 20.7077C78.7478 20.7077 77.9392 20.0541 77.9392 18.8782C77.9367 17.3131 79.3343 16.4399 81.2472 16.2387L81.2464 19.6324Z" fill="#151719"/>
+    <path d="M39.2769 6.66778C36.4378 6.66778 33.105 7.61497 33.105 11.9734L37.4568 11.9751C37.5488 11.0353 37.9498 10.4283 39.0914 10.4283C39.9861 10.4283 40.3871 11.0678 40.3871 12.0748V13.2175C37.0244 13.3181 32.4671 14.3992 32.4671 18.9331C32.4671 22.2254 34.399 23.9318 37.0832 23.9318C38.6241 23.9318 40.3879 22.5746 40.3879 22.5746V23.9318H45.4116L45.3851 11.8062C45.3851 8.07817 42.2693 6.66778 39.2778 6.66778H39.2769ZM40.3871 19.6324C39.7699 20.405 39.2148 20.7077 38.7832 20.7077C37.8885 20.7077 37.0791 20.0541 37.0791 18.8782C37.0774 17.3131 38.4742 16.4399 40.3871 16.2387V19.6324Z" fill="#151719"/>
+    <path d="M0 23.9692H5.58295V14.1397H11.0731V9.49439H5.58295V4.64782H11.5992V0.00249502H0V23.9692Z" fill="#151719"/>
+    <path d="M12.7085 23.9667V7.06861H17.7289V23.9667H12.7085Z" fill="#151719"/>
+    <path d="M12.7085 4.84823V0H17.7289V4.84823H12.7085Z" fill="#151719"/>
+    <path d="M28.4673 6.66695C26.6696 6.66695 25.0872 7.60915 24.0318 9.3264H23.9696V7.07027H18.9451V23.9692H23.9696V11.615L24.2488 11.2108C24.5901 10.7401 25.0242 10.5048 25.552 10.5048C26.4823 10.5048 26.7615 11.1102 26.7615 12.0191V23.9692H31.7861V10.4707C31.7861 8.14803 30.4837 6.66695 28.4673 6.66695Z" fill="#151719"/>
+    <path d="M55.9255 6.66695C54.1261 6.66695 52.5446 7.60915 51.49 9.3264H51.4279V7.07027H46.4033V23.9692H51.4279V11.615L51.7071 11.2108C52.0484 10.7401 52.4825 10.5048 53.0102 10.5048C53.9406 10.5048 54.2197 11.1102 54.2197 12.0191V23.9692H59.2443V10.4707C59.2443 8.14803 57.9412 6.66695 55.9255 6.66695Z" fill="#151719"/>
+    <path d="M65.0435 11.0827C65.0435 10.5555 65.5091 10.0283 66.5322 10.0283C67.7732 10.0283 68.4244 11.1484 68.8892 12.1372L72.3944 11.1476C71.4947 7.91933 68.9513 6.66778 66.4394 6.66778C62.0039 6.66778 60.3917 10.0607 60.3917 11.8071C60.3917 17.541 68.0218 16.4541 68.0218 19.2216C68.0218 19.9468 67.3698 20.4416 66.4394 20.4416C64.9813 20.4416 64.3302 19.2882 63.7412 18.0358L59.8946 19.3206C60.7016 22.0225 62.9657 24 66.4394 24C70.1302 24 72.6735 21.9235 72.6735 18.3651C72.6735 12.8956 65.0435 13.7522 65.0435 11.0827Z" fill="#151719"/>
+    <path d="M93.3318 16.2611H93.2697L91.5018 7.0711H86.2908L90.665 23.9692H94.4486L99.4417 7.0711H95.4717L93.3318 16.2611Z" fill="#151719"/>
+    <path d="M100.094 23.9667V7.06861H105.114V23.9667H100.094Z" fill="#151719"/>
+    <path d="M100.094 4.84823V0H105.114V4.84823H100.094Z" fill="#151719"/>
+    <path d="M111.072 11.0827C111.072 10.5555 111.538 10.0291 112.561 10.0291C113.802 10.0291 114.453 11.1493 114.918 12.1372L118.422 11.1493C117.524 7.91934 114.98 6.66695 112.468 6.66695C108.034 6.66695 106.42 10.0615 106.42 11.8079C106.42 17.5418 114.05 16.4541 114.05 19.2216C114.05 19.9468 113.399 20.4416 112.467 20.4416C111.009 20.4416 110.359 19.2882 109.77 18.0358L105.923 19.3206C106.73 22.0233 108.995 24 112.468 24C116.159 24 118.702 21.9243 118.702 18.3651C118.702 12.8956 111.072 13.7522 111.072 11.0827Z" fill="#151719"/>
+    <path d="M126.146 6.66695C121.524 6.66695 119.229 10.6212 119.229 15.3006C119.229 19.8811 121.401 24 126.208 24C130.674 24 132.225 20.2428 132.442 19.4852L129.062 18.1672C128.751 19.5185 127.728 20.4408 126.519 20.4408C124.533 20.4408 124.254 17.9692 124.254 16.5198H132.659V15.3988C132.659 11.0827 130.984 6.66695 126.146 6.66695ZM124.254 13.3563C124.254 11.8079 124.688 10.0283 126.115 10.0283C127.852 10.0283 127.976 11.8079 128.007 13.3563H124.254Z" fill="#151719"/>
+    <path d="M143.081 6.66695C141.283 6.66695 139.7 7.60998 138.646 9.3264H138.584V7.0711H133.559V23.9692H138.584V11.615L138.864 11.2116C139.204 10.7401 139.638 10.5048 140.166 10.5048C141.096 10.5048 141.375 11.1102 141.375 12.0191V23.9692H146.4V10.4707C146.4 8.14803 145.097 6.66695 143.081 6.66695Z" fill="#151719"/>
+  </svg>
+);
 
-function InlineCostOffer({ onAcceptDiscount, onDowngrade }) {
-  const [claimed, setClaimed] = useState(false);
-
-  if (claimed) {
-    return (
-      <div className="mt-4 p-4 rounded-lg bg-green-50 border border-green-200 text-[13px] text-green-800 font-medium">
-        ✓ 30% discount applied — your next invoice will reflect yearly pricing.
-      </div>
-    );
-  }
-
+function RadioDot({ selected }) {
   return (
-    <div className="mt-4 space-y-3">
-      {/* Downgrade */}
-      <div className="p-4 rounded-lg border border-gray-border bg-gray-page flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[13px] font-semibold text-gray-dark mb-0.5">Switch to a cheaper plan</p>
-          <p className="text-[12px] text-gray-medium">Keep digital access — Basic from 449 kr/month</p>
-        </div>
-        <button
-          onClick={onDowngrade}
-          className="flex-shrink-0 text-[12px] font-semibold text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0 whitespace-nowrap"
-        >
-          View plans →
-        </button>
-      </div>
-
-      {/* Yearly discount */}
-      <div className="p-4 rounded-lg border border-blue-primary bg-blue-light flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[13px] font-semibold text-gray-dark mb-0.5">Switch to yearly and save 30%</p>
-          <p className="text-[12px] text-gray-medium">Billed once a year — no month-to-month surprises</p>
-        </div>
-        <button
-          onClick={() => { setClaimed(true); setTimeout(onAcceptDiscount, 1500); }}
-          className="flex-shrink-0 text-[12px] font-semibold text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0 whitespace-nowrap"
-        >
-          Claim offer →
-        </button>
-      </div>
+    <div className={`relative w-4 h-4 rounded-full border-2 flex-shrink-0 overflow-hidden ${selected ? 'border-blue-primary' : 'border-gray-border'}`}>
+      {selected && <div className="absolute w-[6px] h-[6px] bg-blue-primary rounded-full left-[3px] top-[3px]" />}
     </div>
   );
 }
 
-function InlinePauseOffer({ maxMonths, onAcceptPause }) {
-  const [selected, setSelected] = useState(null);
-  const [confirmed, setConfirmed] = useState(false);
-  const months = Array.from({ length: maxMonths }, (_, i) => i + 1);
-
-  if (confirmed) {
-    return (
-      <div className="mt-4 p-4 rounded-lg bg-amber-50 border border-amber-200 text-[13px] text-amber-800 font-medium">
-        ✓ Subscription paused for {selected} {selected === 1 ? 'month' : 'months'} — it will resume automatically.
-      </div>
-    );
-  }
-
-  return (
-    <div className="mt-4">
-      <p className="text-[12px] text-gray-medium mb-2">How long would you like to pause?</p>
-      <div className="grid grid-cols-4 gap-2 mb-3">
-        {months.map((m) => (
-          <button
-            key={m}
-            onClick={() => setSelected(m)}
-            className={`py-2 rounded-lg border text-[13px] font-medium transition-all cursor-pointer ${
-              selected === m
-                ? 'border-blue-primary bg-blue-light text-blue-primary'
-                : 'border-gray-border bg-white text-gray-dark hover:border-gray-muted'
-            }`}
-          >
-            {m}mo
-          </button>
-        ))}
-      </div>
-      <button
-        disabled={!selected}
-        onClick={() => { setConfirmed(true); setTimeout(onAcceptPause, 1500); }}
-        className={`text-[12px] font-semibold text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0 ${!selected ? 'opacity-40 cursor-not-allowed' : ''}`}
-      >
-        Pause for {selected ?? '...'} {selected === 1 ? 'month' : 'months'} →
-      </button>
-    </div>
-  );
-}
-
-function InlineCompetitorForm() {
-  const [competitor, setCompetitor] = useState('');
-  const [why, setWhy] = useState('');
-
-  return (
-    <div className="mt-4 space-y-3">
-      <div>
-        <label className="block text-[12px] font-semibold text-gray-dark mb-1">Which publication?</label>
-        <select
-          value={competitor}
-          onChange={(e) => setCompetitor(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg border border-gray-border bg-white text-[13px] text-gray-dark focus:outline-none focus:border-blue-primary"
-        >
-          <option value="">Select...</option>
-          {COMPETITORS.map((c) => <option key={c} value={c}>{c}</option>)}
-        </select>
-      </div>
-      <div>
-        <label className="block text-[12px] font-semibold text-gray-dark mb-1">Why are you switching? <span className="font-normal text-gray-medium">(optional)</span></label>
-        <textarea
-          value={why}
-          onChange={(e) => setWhy(e.target.value)}
-          placeholder="What do they offer that we don't?"
-          rows={3}
-          className="w-full px-3 py-2 rounded-lg border border-gray-border bg-white text-[13px] text-gray-dark resize-none focus:outline-none focus:border-blue-primary"
-        />
-      </div>
-    </div>
-  );
-}
-
-function InlineTextarea({ placeholder }) {
+function Field({ label, placeholder }) {
   const [value, setValue] = useState('');
   return (
-    <div className="mt-4">
-      <textarea
+    <div className="flex flex-col gap-1 w-full" onClick={(e) => e.stopPropagation()}>
+      <p className="text-[12px] font-medium text-gray-dark">{label}</p>
+      <input
+        type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={placeholder}
-        rows={3}
-        className="w-full px-3 py-2 rounded-lg border border-gray-border bg-white text-[13px] text-gray-dark resize-none focus:outline-none focus:border-blue-primary"
+        className="bg-gray-secondary rounded-[8px] h-[40px] px-4 text-[14px] text-gray-dark w-full outline-none placeholder:text-[#9ea6ad]"
       />
     </div>
   );
 }
 
-function InlineSupportInfo() {
+function PausePanel({ onPause }) {
+  const [tab, setTab] = useState('1');
   return (
-    <div className="mt-4 p-4 rounded-lg border border-gray-border bg-gray-page flex items-start gap-3">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5">
-        <path d="M2 4l6 5 6-5M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z" stroke="#67737e" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
-      </svg>
-      <div>
-        <p className="text-[13px] font-semibold text-gray-dark mb-0.5">Contact customer support</p>
-        <a href="mailto:kundeservice@finansavisen.no" className="text-[12px] text-blue-primary hover:underline">
-          kundeservice@finansavisen.no
-        </a>
-        <p className="text-[12px] text-gray-medium mt-0.5">Response within 24 hours</p>
+    <div className="flex flex-col gap-4" onClick={(e) => e.stopPropagation()}>
+      <p className="text-[12px] font-medium text-gray-dark leading-4">
+        Would you like to pause the subscription? Your subscription would resume on 6. juni 2026.
+      </p>
+      <div className="flex h-[32px] w-[220px] bg-gray-secondary rounded-[8px] overflow-hidden">
+        {['1', '2'].map((val) => (
+          <button
+            key={val}
+            onClick={() => setTab(val)}
+            className={`flex-1 flex items-center justify-center text-[12px] font-medium rounded-[8px] cursor-pointer transition-colors ${
+              tab === val
+                ? 'bg-white shadow-[inset_0_0_0_1px_#D5D9DC] text-gray-dark border-0'
+                : 'bg-transparent border-0 text-gray-medium'
+            }`}
+          >
+            {val === '1' ? '1 måned' : '2 måneder'}
+          </button>
+        ))}
       </div>
+      <Button variant="primary" className="whitespace-nowrap" onClick={onPause}>
+        Pause subscription
+      </Button>
     </div>
   );
 }
 
-// ── Inline expansion map ──────────────────────────────────────────────────────
-
-function InlineExpansion({ reasonId, onAcceptOffer, onDowngrade }) {
+function Expansion({ reasonId, onPause }) {
   switch (reasonId) {
-    case 'cost':
-      return null;
     case 'not-using':
-      return <InlinePauseOffer maxMonths={3} onAcceptPause={onAcceptOffer} />;
     case 'temp-break':
-      return <InlinePauseOffer maxMonths={12} onAcceptPause={onAcceptOffer} />;
+      return <PausePanel onPause={onPause} />;
     case 'competitor':
-      return <InlineCompetitorForm />;
+      return (
+        <div className="flex flex-col gap-4 w-full">
+          <Field label="Which publication?" placeholder="Publication" />
+          <Field label="Tell us why are you switching" placeholder="Tell us your reason" />
+        </div>
+      );
     case 'feature':
-      return <InlineTextarea placeholder="What feature or content is missing for you?" />;
+      return <Field label="Tell us more" placeholder="How can we improve?" />;
     case 'payment':
-      return <InlineSupportInfo />;
+      return (
+        <div className="bg-blue-light rounded-[8px] px-4 py-3" onClick={(e) => e.stopPropagation()}>
+          <p className="text-[12px] font-medium text-blue-primary leading-4">
+            Need help? Try contacting our customer service at{' '}
+            <a href="mailto:abo@hegnar.no" className="underline" onClick={(e) => e.stopPropagation()}>abo@hegnar.no</a>
+            {' '}or call{' '}
+            <span className="underline">23 33 91 50</span>
+          </p>
+        </div>
+      );
     case 'other':
-      return <InlineTextarea placeholder="Tell us what's on your mind..." />;
+      return <Field label="Tell us more" placeholder="How can we improve?" />;
     default:
       return null;
   }
 }
 
-// ── Main component ────────────────────────────────────────────────────────────
-
-export default function ReasonSelect({ plan, onBack, onContinue, onAcceptOffer, onDowngrade }) {
+export default function ReasonSelect({ onBack, onContinue }) {
   const [selected, setSelected] = useState(null);
 
   return (
     <div className="min-h-screen bg-gray-page flex flex-col">
-      <StepHeader title="Cancel subscription" onBack={onBack} onClose={onBack} />
+      {/* Header */}
+      <div className="bg-white h-[72px] flex items-center px-8 border-b border-gray-border shrink-0">
+        {FA_LOGO}
+      </div>
 
+      {/* Content */}
       <div className="flex-1 flex flex-col items-center px-6 py-10">
-        <div className="w-full max-w-lg">
-          <h2 className="text-[20px] font-bold text-gray-dark mb-1">Why are you cancelling?</h2>
-          <p className="text-[14px] text-gray-medium mb-6">Your feedback helps us improve.</p>
-
-          <div className="space-y-2 mb-6">
-            {CANCEL_REASONS.map((reason) => {
-              const isSelected = selected === reason.id;
-              return (
-                <div
-                  key={reason.id}
-                  className={`bg-white rounded-lg border transition-all ${
-                    isSelected
-                      ? 'border-blue-primary ring-1 ring-blue-primary'
-                      : 'border-gray-border hover:border-gray-muted'
-                  }`}
-                >
-                  {/* Radio row */}
-                  <label className="flex items-center gap-3 px-4 py-3.5 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="reason"
-                      value={reason.id}
-                      checked={isSelected}
-                      onChange={() => setSelected(reason.id)}
-                      className="accent-blue-primary flex-shrink-0"
-                    />
-                    <span className="text-[14px] text-gray-dark font-medium">{reason.label}</span>
-                  </label>
-
-                  {/* Inline expansion */}
-                  {isSelected && (
-                    <div className="px-4 pb-4">
-                      <InlineExpansion
-                        reasonId={reason.id}
-                        onAcceptOffer={onAcceptOffer}
-                        onDowngrade={onDowngrade}
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
+        <div className="w-full max-w-[440px] flex flex-col gap-8">
+          {/* Heading */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-[20px] font-bold text-gray-dark leading-[26px]">Help us improve</h2>
+            <p className="text-[14px] text-gray-medium leading-5">
+              We're sorry to see you go. Before you leave, tell us why you're canceling so we can improve our product.
+            </p>
           </div>
 
-          <Button
-            variant="primary"
-            fullWidth
-            onClick={() => onContinue(selected)}
-          >
-            Continue
-          </Button>
+          {/* Card */}
+          <div className="bg-white border border-gray-border rounded-[16px] overflow-hidden">
+            <div className="flex flex-col gap-4 p-4">
+              {CANCEL_REASONS.map((reason) => {
+                const isSelected = selected === reason.id;
+                const expansion = isSelected ? <Expansion reasonId={reason.id} onPause={onBack} /> : null;
+                return (
+                  <div
+                    key={reason.id}
+                    onClick={() => setSelected(isSelected ? null : reason.id)}
+                    className={`border rounded-[8px] p-4 cursor-pointer transition-colors ${
+                      isSelected ? 'border-blue-primary flex flex-col gap-6' : 'border-gray-border hover:border-gray-muted'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <RadioDot selected={isSelected} />
+                      <span className="text-[14px] text-gray-dark leading-5">{reason.label}</span>
+                    </div>
+                    {expansion}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex items-center justify-end gap-2">
+            <Button variant="outline" className="w-[104px] shadow-[inset_0_0_0_1px_#EAECED]" onClick={onBack}>Avbryt</Button>
+            <Button variant="primary" className="w-[104px]" onClick={() => onContinue(selected)}>Fullfør</Button>
+          </div>
         </div>
       </div>
     </div>

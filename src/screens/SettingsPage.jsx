@@ -71,7 +71,7 @@ export default function SettingsPage({
   deliveryPause, holidayAddress, pendingPlanChange,
   onChangePlan, onCancelSubscription, onRenewSubscription,
   onEditAddress, onPauseDelivery, onHolidayAddress,
-  onUnpauseDelivery, onRemoveHolidayAddress,
+  onUnpauseDelivery, onRemoveHolidayAddress, onReportDelivery,
 }) {
   const isCancelled = subscriptionStatus === 'cancelled';
   const noPaperPlan = !isCancelled && !plan.hasPaper && !pendingPlanChange?.plan?.hasPaper;
@@ -105,29 +105,27 @@ export default function SettingsPage({
               </p>
               <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#67737e' }}>
                 {isCancelled
-                  ? 'Your subscription has been cancelled.'
+                  ? 'Subscription cancelled'
                   : `Renewed 21. mai 2026 at ${plan.monthlyPrice.toLocaleString('en-US')} kr.`}
               </p>
             </div>
 
-            {/* Features */}
-            {!isCancelled && (
-              <div className="flex flex-col gap-4">
-                <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
-                  Here's what's included in your subscription:
-                </p>
-                <ul className="flex flex-col gap-2">
-                  {(plan.settingsFeatures ?? plan.features).map((f) => (
-                    <li key={f} className="flex items-start gap-2">
-                      {CHECK_ICON}
-                      <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
-                        {f}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            {/* Features — always shown */}
+            <div className="flex flex-col gap-4">
+              <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
+                Here's what's included in your subscription:
+              </p>
+              <ul className="flex flex-col gap-2">
+                {(plan.settingsFeatures ?? plan.features).map((f) => (
+                  <li key={f} className="flex items-start gap-2">
+                    {CHECK_ICON}
+                    <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
+                      {f}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
 
           {/* Buttons row — separate section matching Figma */}
@@ -137,7 +135,9 @@ export default function SettingsPage({
             ) : (
               <>
                 {/* Change plan = primary (blue) per Figma */}
-                <Button variant="primary" onClick={onChangePlan}>Change plan</Button>
+                <Button variant="primary" onClick={onChangePlan}>
+                  {plan.id === 'basic' || plan.id === 'total' ? 'Upgrade' : 'Change plan'}
+                </Button>
                 {/* Cancel = secondary (gray) per Figma */}
                 <Button variant="secondary" onClick={onCancelSubscription}>Cancel subscription</Button>
               </>
@@ -153,7 +153,7 @@ export default function SettingsPage({
         <div className="bg-white rounded-[16px] overflow-hidden">
           {/* Card body */}
           <div className="flex flex-col gap-6 p-4">
-            {isCancelled && (
+            {isCancelled && plan.hasPaper && (
               <InfoBar variant="amber" icon={ICON_WARNING}>
                 Subscription cancelled — you will not receive physical copies after 21. mai 2026
               </InfoBar>
@@ -212,7 +212,7 @@ export default function SettingsPage({
             {/* Report link */}
             <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '12px', lineHeight: '16px', color: '#67737e' }}>
               Didn't receive newspaper?{' '}
-              <button className="text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0" style={{ fontWeight: 500, fontSize: '12px' }}>
+              <button onClick={onReportDelivery} className="text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0" style={{ fontWeight: 500, fontSize: '12px' }}>
                 Report it here
               </button>
             </p>

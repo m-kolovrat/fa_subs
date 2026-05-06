@@ -1,27 +1,24 @@
 import { useState } from 'react';
 import ReasonSelect from './ReasonSelect';
 import CostOfferScreen from './CostOfferScreen';
-import BenefitsScreen from './BenefitsScreen';
-import CancelSuccess from './CancelSuccess';
+import ConfirmCancellationScreen from './ConfirmCancellationScreen';
 
-// Steps: 'reason' → 'cost-offer' (if cost) or 'benefits' → 'cancelled'
-export default function CancelFlow({ plan, onClose, onCancelled, onDowngrade }) {
+// Steps: 'reason' → 'cost-offer' (if cost) → 'confirm-cancel'
+//        'reason' → 'confirm-cancel' (all other reasons)
+export default function CancelFlow({ plan, onClose, onCancelled }) {
   const [step, setStep] = useState('reason');
 
   if (step === 'reason') {
     return (
       <ReasonSelect
-        plan={plan}
         onBack={onClose}
         onContinue={(reason) => {
           if (reason === 'cost') {
             setStep('cost-offer');
           } else {
-            setStep('benefits');
+            setStep('confirm-cancel');
           }
         }}
-        onAcceptOffer={onClose}
-        onDowngrade={onDowngrade}
       />
     );
   }
@@ -31,24 +28,20 @@ export default function CancelFlow({ plan, onClose, onCancelled, onDowngrade }) 
       <CostOfferScreen
         plan={plan}
         onBack={() => setStep('reason')}
-        onClaimOffer={onClose}           // accepted offer → back to settings
-        onCancel={() => setStep('cancelled')}
+        onClaimOffer={onClose}
+        onCancel={() => setStep('confirm-cancel')}
       />
     );
   }
 
-  if (step === 'benefits') {
+  if (step === 'confirm-cancel') {
     return (
-      <BenefitsScreen
+      <ConfirmCancellationScreen
         plan={plan}
-        onKeep={onClose}
-        onCancel={() => setStep('cancelled')}
+        onBack={onClose}
+        onConfirm={onCancelled}
       />
     );
-  }
-
-  if (step === 'cancelled') {
-    return <CancelSuccess onDone={onCancelled} />;
   }
 
   return null;

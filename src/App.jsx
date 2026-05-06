@@ -5,9 +5,11 @@ import Layout from './components/Layout';
 import SettingsPage from './screens/SettingsPage';
 import PaywallPage from './screens/PaywallPage';
 import CancelFlow from './screens/cancel/CancelFlow';
-import EditAddress from './screens/delivery/EditAddress';
-import PauseDelivery from './screens/delivery/PauseDelivery';
-import HolidayAddress from './screens/delivery/HolidayAddress';
+import Snackbar from './components/Snackbar';
+import EditAddressModal from './screens/modals/EditAddressModal';
+import PauseDeliveryModal from './screens/modals/PauseDeliveryModal';
+import HolidayAddressModal from './screens/modals/HolidayAddressModal';
+import ReportDeliveryModal from './screens/modals/ReportDeliveryModal';
 
 const INITIAL_ADDRESS = {
   name: 'Lucky Groningen',
@@ -26,6 +28,8 @@ export default function App() {
   const [deliveryPause, setDeliveryPause] = useState(null);       // null | { startDate, endDate }
   const [holidayAddress, setHolidayAddress] = useState(null);     // null | { address, startDate, endDate }
   const [pendingPlanChange, setPendingPlanChange] = useState(null); // null | { plan, effectiveDate }
+  const [snackbar, setSnackbar] = useState(null); // null | string message
+  const [modal, setModal] = useState(null); // null | 'edit-address' | 'pause-delivery' | 'holiday-address' | 'report-delivery'
 
   const goSettings = () => setScreen('settings');
 
@@ -48,12 +52,12 @@ export default function App() {
     setSubscriptionStatus('cancelled');
     setPendingPlanChange(null);
     goSettings();
+    setSnackbar('Subscription cancelled');
   };
 
   // --- Edit address ---
-  const handleSaveAddress = (address, period) => {
+  const handleSaveAddress = (address) => {
     setDeliveryAddress(address);
-    setDeliveryPeriod(period);
   };
 
   // --- Pause delivery ---
@@ -88,29 +92,6 @@ export default function App() {
         onDowngrade={() => setScreen('paywall')}
       />
     );
-  } else if (screen === 'edit-address') {
-    content = (
-      <EditAddress
-        address={deliveryAddress}
-        deliveryPeriod={deliveryPeriod}
-        onBack={goSettings}
-        onSave={handleSaveAddress}
-      />
-    );
-  } else if (screen === 'pause-delivery') {
-    content = (
-      <PauseDelivery
-        onBack={goSettings}
-        onSave={handleSavePause}
-      />
-    );
-  } else if (screen === 'holiday-address') {
-    content = (
-      <HolidayAddress
-        onBack={goSettings}
-        onSave={handleSaveHoliday}
-      />
-    );
   } else {
     content = (
       <Layout>
@@ -125,9 +106,10 @@ export default function App() {
           onChangePlan={() => setScreen('paywall')}
           onCancelSubscription={() => setScreen('cancel')}
           onRenewSubscription={() => setScreen('paywall')}
-          onEditAddress={() => setScreen('edit-address')}
-          onPauseDelivery={() => setScreen('pause-delivery')}
-          onHolidayAddress={() => setScreen('holiday-address')}
+          onEditAddress={() => setModal('edit-address')}
+          onPauseDelivery={() => setModal('pause-delivery')}
+          onHolidayAddress={() => setModal('holiday-address')}
+          onReportDelivery={() => setModal('report-delivery')}
           onUnpauseDelivery={() => setDeliveryPause(null)}
           onRemoveHolidayAddress={() => setHolidayAddress(null)}
         />
@@ -138,6 +120,32 @@ export default function App() {
   return (
     <>
       {content}
+      {modal === 'edit-address' && (
+        <EditAddressModal
+          address={deliveryAddress}
+          onClose={() => setModal(null)}
+          onSave={handleSaveAddress}
+        />
+      )}
+      {modal === 'pause-delivery' && (
+        <PauseDeliveryModal
+          onClose={() => setModal(null)}
+          onSave={handleSavePause}
+        />
+      )}
+      {modal === 'holiday-address' && (
+        <HolidayAddressModal
+          onClose={() => setModal(null)}
+          onSave={handleSaveHoliday}
+        />
+      )}
+      {modal === 'report-delivery' && (
+        <ReportDeliveryModal
+          onClose={() => setModal(null)}
+          onReport={() => {}}
+        />
+      )}
+      {snackbar && <Snackbar message={snackbar} onClose={() => setSnackbar(null)} />}
       {import.meta.env.DEV && <Agentation />}
     </>
   );
