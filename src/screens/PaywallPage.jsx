@@ -40,7 +40,7 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
 
       {/* Content */}
       <div className="flex-1 px-8 py-8 max-w-5xl mx-auto w-full flex flex-col items-center">
-        <h1 className="text-[24px] font-bold text-gray-dark mb-1 text-center">Subscribe today</h1>
+        <h1 className="text-[24px] font-bold text-gray-dark mb-1 text-center">Select your plan</h1>
         <p className="text-[14px] text-gray-medium mb-6 text-center">No commitment. Cancel easily any time</p>
 
         {/* Billing toggle */}

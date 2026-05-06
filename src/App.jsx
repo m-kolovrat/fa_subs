@@ -55,6 +55,19 @@ export default function App() {
     setSnackbar('Subscription cancelled');
   };
 
+  // --- Pause from cancel flow ---
+  const handlePauseFromCancel = (months) => {
+    const start = new Date();
+    const end = new Date();
+    end.setMonth(end.getMonth() + months);
+    setDeliveryPause({
+      startDate: start.toISOString().slice(0, 10),
+      endDate: end.toISOString().slice(0, 10),
+    });
+    goSettings();
+    setSnackbar('Subscription paused');
+  };
+
   // --- Edit address ---
   const handleSaveAddress = (address) => {
     setDeliveryAddress(address);
@@ -89,6 +102,7 @@ export default function App() {
         plan={currentPlan}
         onClose={goSettings}
         onCancelled={handleCancelled}
+        onPause={handlePauseFromCancel}
         onDowngrade={() => setScreen('paywall')}
       />
     );

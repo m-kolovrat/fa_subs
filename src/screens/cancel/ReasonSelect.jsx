@@ -67,7 +67,7 @@ function PausePanel({ onPause }) {
           </button>
         ))}
       </div>
-      <Button variant="primary" className="whitespace-nowrap" onClick={onPause}>
+      <Button variant="primary" className="whitespace-nowrap" onClick={() => onPause(parseInt(tab))}>
         Pause subscription
       </Button>
     </div>
@@ -106,7 +106,7 @@ function Expansion({ reasonId, onPause }) {
   }
 }
 
-export default function ReasonSelect({ onBack, onContinue }) {
+export default function ReasonSelect({ onBack, onContinue, onPause }) {
   const [selected, setSelected] = useState(null);
 
   return (
@@ -132,7 +132,7 @@ export default function ReasonSelect({ onBack, onContinue }) {
             <div className="flex flex-col gap-4 p-4">
               {CANCEL_REASONS.map((reason) => {
                 const isSelected = selected === reason.id;
-                const expansion = isSelected ? <Expansion reasonId={reason.id} onPause={onBack} /> : null;
+                const expansion = isSelected ? <Expansion reasonId={reason.id} onPause={onPause} /> : null;
                 return (
                   <div
                     key={reason.id}

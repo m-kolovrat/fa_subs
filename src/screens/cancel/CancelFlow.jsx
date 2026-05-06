@@ -5,13 +5,14 @@ import ConfirmCancellationScreen from './ConfirmCancellationScreen';
 
 // Steps: 'reason' → 'cost-offer' (if cost) → 'confirm-cancel'
 //        'reason' → 'confirm-cancel' (all other reasons)
-export default function CancelFlow({ plan, onClose, onCancelled }) {
+export default function CancelFlow({ plan, onClose, onCancelled, onPause }) {
   const [step, setStep] = useState('reason');
 
   if (step === 'reason') {
     return (
       <ReasonSelect
         onBack={onClose}
+        onPause={onPause}
         onContinue={(reason) => {
           if (reason === 'cost') {
             setStep('cost-offer');

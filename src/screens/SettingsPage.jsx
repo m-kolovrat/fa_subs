@@ -98,6 +98,12 @@ export default function SettingsPage({
               </InfoBar>
             )}
 
+            {deliveryPause && (
+              <InfoBar variant="amber" icon={ICON_PAUSE}>
+                Subscription paused from {formatDate(deliveryPause.startDate)} — resumes on {formatDate(deliveryPause.endDate)}
+              </InfoBar>
+            )}
+
             {/* Plan name + renewal */}
             <div className="flex flex-col gap-1">
               <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
@@ -165,17 +171,6 @@ export default function SettingsPage({
               </InfoBar>
             )}
 
-            {deliveryPause && (
-              <InfoBar variant="amber" icon={ICON_PAUSE}>
-                <span>Delivery paused until {formatDate(deliveryPause.endDate)}</span>
-                <button
-                  onClick={onUnpauseDelivery}
-                  className="ml-2 underline cursor-pointer bg-transparent border-0 p-0 text-[12px] font-semibold text-amber-700 hover:text-amber-900"
-                >
-                  Unpause
-                </button>
-              </InfoBar>
-            )}
 
             {holidayAddress && (
               <InfoBar variant="blue" icon={ICON_LOCATION}>
