@@ -52,8 +52,8 @@ function PausePanel({ onPause }) {
       <p className="text-[12px] font-medium text-gray-dark leading-4">
         Would you like to pause the subscription? Your subscription would resume on 6. juni 2026.
       </p>
-      <div className="flex h-[32px] w-[220px] bg-gray-secondary rounded-[8px] overflow-hidden">
-        {['1', '2'].map((val) => (
+      <div className="flex h-[32px] w-full bg-gray-secondary rounded-[8px] overflow-hidden">
+        {['1', '2', '3'].map((val) => (
           <button
             key={val}
             onClick={() => setTab(val)}
@@ -63,7 +63,7 @@ function PausePanel({ onPause }) {
                 : 'bg-transparent border-0 text-gray-medium'
             }`}
           >
-            {val === '1' ? '1 måned' : '2 måneder'}
+            {val === '1' ? '1 måned' : val === '2' ? '2 måneder' : '3 måneder'}
           </button>
         ))}
       </div>
@@ -155,7 +155,7 @@ export default function ReasonSelect({ onBack, onContinue, onPause }) {
           {/* Actions */}
           <div className="flex items-center justify-end gap-2">
             <Button variant="outline" className="w-[104px] shadow-[inset_0_0_0_1px_#EAECED]" onClick={onBack}>Avbryt</Button>
-            <Button variant="primary" className="w-[104px]" onClick={() => onContinue(selected)}>Fullfør</Button>
+            <Button variant="primary" className="w-[104px]" onClick={() => onContinue(selected)}>Bekreft</Button>
           </div>
         </div>
       </div>

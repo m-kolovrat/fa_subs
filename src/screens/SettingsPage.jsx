@@ -1,9 +1,6 @@
-import Button from '../components/Button';
-
-// Blue circle checkmark matching Figma
 const CHECK_ICON = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-0.5">
-    <path d="M4.5 8.5l2.5 2.5 4.5-5" stroke="#151719" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0">
+    <path d="M3 8.5l3 3 7-7" stroke="#0373e3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
   </svg>
 );
 
@@ -57,7 +54,6 @@ function formatDate(dateStr) {
   return `${parseInt(d)}. ${months[parseInt(m) - 1]} ${y}`;
 }
 
-// Shared label style matching Figma: 12px Medium gray
 function FieldLabel({ children }) {
   return (
     <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '12px', lineHeight: '16px', color: '#67737e' }}>
@@ -74,16 +70,77 @@ export default function SettingsPage({
   onUnpauseDelivery, onRemoveHolidayAddress, onReportDelivery,
 }) {
   const isCancelled = subscriptionStatus === 'cancelled';
-  const noPaperPlan = !isCancelled && !plan.hasPaper && !pendingPlanChange?.plan?.hasPaper;
 
   return (
     <div className="w-full space-y-10">
+      {/* ── Delivery section — only for paper plans ── */}
+      {plan.hasPaper && (
+        <div>
+          <h2 className="text-[18px] font-semibold text-gray-dark mb-4">Delivery</h2>
+
+          <div className="bg-white rounded-[16px] border border-[#eaeced]">
+            <div className="flex flex-col gap-6 p-4">
+              {isCancelled && (
+                <InfoBar variant="amber" icon={ICON_WARNING}>
+                  Subscription cancelled — you will not receive physical copies after 21. mai 2026
+                </InfoBar>
+              )}
+
+              {holidayAddress && (
+                <InfoBar variant="blue" icon={ICON_LOCATION}>
+                  <span>
+                    Holiday address active: {holidayAddress.address.street}, {holidayAddress.address.postal} {holidayAddress.address.city}
+                    {' '}({formatDate(holidayAddress.startDate)}–{formatDate(holidayAddress.endDate)})
+                  </span>
+                  <span className="ml-2 inline-flex gap-2">
+                    <button onClick={onHolidayAddress} className="underline cursor-pointer bg-transparent border-0 p-0 text-[12px] font-semibold text-blue-primary hover:opacity-70">Edit</button>
+                    <button onClick={onRemoveHolidayAddress} className="underline cursor-pointer bg-transparent border-0 p-0 text-[12px] font-semibold text-blue-primary hover:opacity-70">Remove</button>
+                  </span>
+                </InfoBar>
+              )}
+
+              <div className="flex flex-col gap-1">
+                <FieldLabel>Delivery address</FieldLabel>
+                <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
+                  <p>{deliveryAddress.name}</p>
+                  <p>{deliveryAddress.street}</p>
+                  {deliveryAddress.apt && <p>{deliveryAddress.apt}</p>}
+                  <p>{deliveryAddress.postal} {deliveryAddress.city}</p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <FieldLabel>Delivery period</FieldLabel>
+                <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
+                  {deliveryPeriod}
+                </p>
+              </div>
+
+              <div className="flex gap-2 items-start">
+                <button onClick={onEditAddress} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Edit address</button>
+                <button onClick={onPauseDelivery} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Pause delivery</button>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <p className="text-[12px] font-medium text-gray-medium">
+                  Didn't receive newspaper?{' '}
+                  <button onClick={onReportDelivery} className="text-blue-primary bg-transparent border-0 p-0 text-[12px] font-medium cursor-pointer hover:underline">Report it here</button>
+                </p>
+                <p className="text-[12px] font-medium text-gray-medium">
+                  Need a temporary holiday address?{' '}
+                  <button onClick={onHolidayAddress} className="text-blue-primary bg-transparent border-0 p-0 text-[12px] font-medium cursor-pointer hover:underline">Add it here</button>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ── Subscription section ── */}
       <div>
         <h2 className="text-[18px] font-semibold text-gray-dark mb-4">Current subscription plan</h2>
 
-        <div className="bg-white rounded-[16px] overflow-hidden">
-          {/* Card body */}
+        <div className="bg-white rounded-[16px] border border-[#eaeced]">
           <div className="flex flex-col gap-6 p-4">
             {isCancelled && (
               <InfoBar variant="amber" icon={ICON_WARNING}>
@@ -104,7 +161,6 @@ export default function SettingsPage({
               </InfoBar>
             )}
 
-            {/* Plan name + renewal */}
             <div className="flex flex-col gap-1">
               <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 600, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
                 {plan.name}
@@ -116,14 +172,13 @@ export default function SettingsPage({
               </p>
             </div>
 
-            {/* Features — always shown */}
             <div className="flex flex-col gap-4">
               <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
                 Here's what's included in your subscription:
               </p>
               <ul className="flex flex-col gap-2">
                 {(plan.settingsFeatures ?? plan.features).map((f) => (
-                  <li key={f} className="flex items-start gap-2">
+                  <li key={f} className="flex items-center gap-2">
                     {CHECK_ICON}
                     <span style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
                       {f}
@@ -134,90 +189,17 @@ export default function SettingsPage({
             </div>
           </div>
 
-          {/* Buttons row — separate section matching Figma */}
-          <div className="flex gap-2 p-4">
+          <div className="flex gap-2 items-start p-4">
             {isCancelled ? (
-              <Button variant="primary" onClick={onRenewSubscription}>Renew subscription</Button>
+              <button onClick={onRenewSubscription} className="h-8 px-3 bg-blue-primary text-white text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-90 transition-opacity">Renew subscription</button>
             ) : (
               <>
-                {/* Change plan = primary (blue) per Figma */}
-                <Button variant="primary" onClick={onChangePlan}>
+                <button onClick={onChangePlan} className="h-8 px-3 bg-blue-primary text-white text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-90 transition-opacity">
                   {plan.id === 'basic' || plan.id === 'total' ? 'Upgrade' : 'Change plan'}
-                </Button>
-                {/* Cancel = secondary (gray) per Figma */}
-                <Button variant="secondary" onClick={onCancelSubscription}>Cancel subscription</Button>
+                </button>
+                <button onClick={onCancelSubscription} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Cancel subscription</button>
               </>
             )}
-          </div>
-        </div>
-      </div>
-
-      {/* ── Delivery section ── */}
-      <div>
-        <h2 className="text-[18px] font-semibold text-gray-dark mb-4">Delivery</h2>
-
-        <div className="bg-white rounded-[16px] overflow-hidden">
-          {/* Card body */}
-          <div className="flex flex-col gap-6 p-4">
-            {isCancelled && plan.hasPaper && (
-              <InfoBar variant="amber" icon={ICON_WARNING}>
-                Subscription cancelled — you will not receive physical copies after 21. mai 2026
-              </InfoBar>
-            )}
-
-            {noPaperPlan && (
-              <InfoBar variant="blue" icon={ICON_LOCATION}>
-                Subscribe to the <strong>Total + paper</strong> plan to receive physical copies of the newspaper
-              </InfoBar>
-            )}
-
-
-            {holidayAddress && (
-              <InfoBar variant="blue" icon={ICON_LOCATION}>
-                <span>
-                  Holiday address active: {holidayAddress.address.street}, {holidayAddress.address.postal} {holidayAddress.address.city}
-                  {' '}({formatDate(holidayAddress.startDate)}–{formatDate(holidayAddress.endDate)})
-                </span>
-                <span className="ml-2 inline-flex gap-2">
-                  <button onClick={onHolidayAddress} className="underline cursor-pointer bg-transparent border-0 p-0 text-[12px] font-semibold text-blue-primary hover:opacity-70">Edit</button>
-                  <button onClick={onRemoveHolidayAddress} className="underline cursor-pointer bg-transparent border-0 p-0 text-[12px] font-semibold text-blue-primary hover:opacity-70">Remove</button>
-                </span>
-              </InfoBar>
-            )}
-
-            {/* Delivery address */}
-            <div className="flex flex-col gap-1">
-              <FieldLabel>Delivery address</FieldLabel>
-              <div style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
-                <p>{deliveryAddress.name}</p>
-                <p>{deliveryAddress.street}</p>
-                {deliveryAddress.apt && <p>{deliveryAddress.apt}</p>}
-                <p>{deliveryAddress.postal} {deliveryAddress.city}</p>
-              </div>
-            </div>
-
-            {/* Delivery period */}
-            <div className="flex flex-col gap-1">
-              <FieldLabel>Delivery period</FieldLabel>
-              <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#151719' }}>
-                {deliveryPeriod}
-              </p>
-            </div>
-
-            {/* Report link */}
-            <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '12px', lineHeight: '16px', color: '#67737e' }}>
-              Didn't receive newspaper?{' '}
-              <button onClick={onReportDelivery} className="text-blue-primary hover:underline cursor-pointer bg-transparent border-0 p-0" style={{ fontWeight: 500, fontSize: '12px' }}>
-                Report it here
-              </button>
-            </p>
-          </div>
-
-          {/* Buttons row */}
-          <div className="flex flex-wrap gap-2 p-4">
-            <Button variant="secondary" onClick={onEditAddress}>Edit address</Button>
-            <Button variant="secondary" onClick={onPauseDelivery}>Pause delivery</Button>
-            <Button variant="secondary" onClick={onHolidayAddress}>Change holiday address</Button>
           </div>
         </div>
       </div>

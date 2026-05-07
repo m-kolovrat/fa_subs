@@ -1,5 +1,3 @@
-import Button from '../../components/Button';
-
 const FA_LOGO = (
   <svg width="147" height="24" viewBox="0 0 147 24" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M80.1362 6.66778C77.298 6.66778 73.9643 7.61497 73.9643 11.9734L78.3161 11.9751C78.4089 11.0353 78.8099 10.4283 79.9515 10.4283C80.8462 10.4283 81.2472 11.0678 81.2472 12.0748V13.2175C77.8837 13.3181 73.3264 14.3992 73.3264 18.9331C73.3264 22.2254 75.2566 23.9318 77.9425 23.9318C79.4834 23.9318 81.2472 22.5746 81.2472 22.5746V23.9318H86.2709L86.2444 11.8062C86.2444 8.07817 83.1286 6.66778 80.1362 6.66778ZM81.2464 19.6324C80.63 20.405 80.0749 20.7077 79.6425 20.7077C78.7478 20.7077 77.9392 20.0541 77.9392 18.8782C77.9367 17.3131 79.3343 16.4399 81.2472 16.2387L81.2464 19.6324Z" fill="#151719"/>
@@ -19,54 +17,58 @@ const FA_LOGO = (
   </svg>
 );
 
-const CHECK_ICON = (
-  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0 mt-[2px]">
-    <path d="M3 8.5l3 3 7-7" stroke="#0373e3" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>
-);
-
-export default function ConfirmCancellationScreen({ plan, onBack, onConfirm }) {
-  const features = plan?.settingsFeatures ?? plan?.features ?? [];
-
+export default function ConfirmPlanChangeScreen({ fromPlan, toPlan, isUpgrade, onBack, onConfirm }) {
   return (
     <div className="min-h-screen bg-gray-page flex flex-col">
       {/* Header */}
-      <div className="bg-white h-[72px] flex items-center px-8 border-b border-gray-border shrink-0">
+      <div className="h-[72px] bg-white border-b border-gray-border flex items-center px-[120px] shrink-0">
         {FA_LOGO}
       </div>
 
       {/* Content */}
-      <div className="flex-1 flex flex-col items-center px-6 py-10">
-        <div className="w-full max-w-[440px] flex flex-col gap-8">
-          {/* Title */}
-          <div>
-            <h2 className="text-[20px] font-bold text-gray-dark leading-[26px]">Confirm cancellation?</h2>
-            <p className="text-[20px] font-bold text-gray-dark leading-[26px]">You will have access until 6. juni 2026.</p>
-          </div>
-
-          {/* Card */}
-          <div className="bg-white border border-gray-border rounded-[16px] p-4 flex flex-col gap-4">
-            <p className="text-[14px] text-gray-dark leading-5">
-              Confirmation email will be send to{' '}
-              <span className="font-semibold">luckygroningen@gmail.com</span>
+      <div className="flex-1 flex flex-col items-center pt-10">
+        <div className="w-[440px] flex flex-col gap-4">
+          {/* Title + description */}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-[20px] font-bold text-gray-dark leading-[26px]">Confirm subscription change?</h2>
+            <p className="text-[14px] text-gray-medium leading-5">
+              {isUpgrade ? (
+                <>
+                  Your subscription will be upgraded from{' '}
+                  <span className="font-semibold">{fromPlan.name}</span>
+                  {' '}to{' '}
+                  <span className="font-semibold">{toPlan.name}</span>
+                  {' '}immediately. You'll get access to all features right away.
+                </>
+              ) : (
+                <>
+                  Your subscription will change from{' '}
+                  <span className="font-semibold">{fromPlan.name}</span>
+                  {' '}to{' '}
+                  <span className="font-semibold">{toPlan.name}</span>
+                  {' '}on{' '}
+                  <span className="font-semibold">21. mai 2026.</span>
+                  <br />
+                  You'll keep your current subscription until your next billing period.
+                </>
+              )}
             </p>
-
-            <p className="text-[14px] text-gray-dark leading-5">You will lose access to</p>
-
-            <ul className="flex flex-col gap-2">
-              {features.map((f) => (
-                <li key={f} className="flex items-start gap-2">
-                  {CHECK_ICON}
-                  <span className="text-[14px] text-gray-dark leading-5">{f}</span>
-                </li>
-              ))}
-            </ul>
           </div>
 
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-2">
-            <Button variant="outline" className="w-[104px] shadow-[inset_0_0_0_1px_#EAECED]" onClick={onBack}>Avbryt</Button>
-            <Button variant="destructive" className="whitespace-nowrap" onClick={onConfirm}>Bekreft oppsigelse</Button>
+          {/* Buttons */}
+          <div className="flex justify-end gap-2 pt-4">
+            <button
+              onClick={onBack}
+              className="h-8 w-[104px] bg-white border border-[#eaeced] text-gray-dark text-[12px] font-medium leading-4 rounded-full cursor-pointer hover:opacity-80 transition-opacity"
+            >
+              Avbryt
+            </button>
+            <button
+              onClick={onConfirm}
+              className="h-8 w-[104px] bg-blue-primary text-white text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer hover:opacity-90 transition-opacity"
+            >
+              Bekreft
+            </button>
           </div>
         </div>
       </div>
