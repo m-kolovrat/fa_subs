@@ -115,10 +115,10 @@ export default function PaywallPage({ currentPlan, subscriptionStatus, onSelectP
                 <div className="flex flex-col gap-4">
                   <h3 className="text-[18px] font-semibold text-gray-dark leading-6">{plan.name}</h3>
                   <div className="flex flex-col gap-2">
-                    <span className="text-[34px] font-bold text-gray-dark leading-[40px]">{price.toLocaleString('nb-NO')}</span>
+                    <span className="text-[34px] font-bold text-gray-dark leading-[40px]">{price.toLocaleString('de-DE')}</span>
                     <div className="flex flex-col text-[14px] text-gray-medium leading-5">
                       <span>Kr/{unit}</span>
-                      <span>Renewed at {price.toLocaleString('nb-NO')} kr/{unit}</span>
+                      <span>Renewed at {price.toLocaleString('de-DE')} kr/{unit}</span>
                     </div>
                   </div>
                 </div>
