@@ -117,18 +117,15 @@ export default function SettingsPage({
               </div>
 
               <div className="flex gap-2 items-start">
-                <button onClick={onEditAddress} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Edit address</button>
+                <button onClick={onHolidayAddress} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Add holiday address</button>
                 <button onClick={onPauseDelivery} className="h-8 px-3 bg-gray-secondary text-gray-dark text-[12px] font-medium leading-4 rounded-full border-0 cursor-pointer whitespace-nowrap hover:opacity-80 transition-opacity">Pause delivery</button>
               </div>
 
               <div className="flex flex-col gap-1">
+                <button onClick={onEditAddress} className="text-blue-primary bg-transparent border-0 p-0 text-[12px] font-medium cursor-pointer hover:underline text-left">Edit your address</button>
                 <p className="text-[12px] font-medium text-gray-medium">
                   Didn't receive newspaper?{' '}
                   <button onClick={onReportDelivery} className="text-blue-primary bg-transparent border-0 p-0 text-[12px] font-medium cursor-pointer hover:underline">Report it here</button>
-                </p>
-                <p className="text-[12px] font-medium text-gray-medium">
-                  Need a temporary holiday address?{' '}
-                  <button onClick={onHolidayAddress} className="text-blue-primary bg-transparent border-0 p-0 text-[12px] font-medium cursor-pointer hover:underline">Add it here</button>
                 </p>
               </div>
             </div>
