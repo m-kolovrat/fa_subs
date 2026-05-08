@@ -148,7 +148,7 @@ export default function SettingsPage({
             {pendingPlanChange && (
               <InfoBar variant="amber" icon={ICON_WARNING}>
                 Your plan will change to <strong>{pendingPlanChange.plan.name}</strong> on{' '}
-                {formatDate(pendingPlanChange.effectiveDate)} at {pendingPlanChange.plan.monthlyPrice.toLocaleString('en-US')} kr/mnd
+                {formatDate(pendingPlanChange.effectiveDate)} at {pendingPlanChange.plan.monthlyPrice.toLocaleString('nb-NO')} kr/mnd
               </InfoBar>
             )}
 
@@ -165,7 +165,7 @@ export default function SettingsPage({
               <p style={{ fontFamily: 'Inter, sans-serif', fontWeight: 400, fontSize: '14px', lineHeight: '20px', color: '#67737e' }}>
                 {isCancelled
                   ? 'Subscription cancelled'
-                  : `Renewed 21. mai 2026 at ${plan.monthlyPrice.toLocaleString('en-US')} kr.`}
+                  : `Renewed 21. mai 2026 at ${plan.monthlyPrice.toLocaleString('nb-NO')} kr.`}
               </p>
             </div>
 
